@@ -25,7 +25,7 @@ Two data sets were chosen for this analysis: 1) the estimated numbers of deaths 
 
 The data sets were joined by country and only complete observations from 2000 - 2010 were included.
 
-## Data Cleaaning ##
+## Data Cleaning ##
 
 
 ```{r}
