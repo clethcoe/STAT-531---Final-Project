@@ -1,0 +1,51 @@
+---
+title: "Final Project - Part 1"
+author: "Owen Bachhuber, Melanie Mitton, Magdalene Lo, Corban Lethcoe"
+format: 
+  html:
+    self-contained: true
+    code-tools: true
+    toc: true
+    theme: journal
+editor: source
+execute: 
+  error: true
+  echo: true
+  message: false
+  warning: false
+code-fold: show
+---
+
+
+## Data Cleaaning ##
+
+
+```{r}
+library(tidyverse)
+library(here)
+
+tb_deaths_long <- read_csv(here("all_forms_of_tb_deaths_per_100000_estimated.csv"))
+gov_health_spending_long <- read_csv(here("government_health_spending_per_person_us.csv"))
+
+# Pivot the Tuberculosis Deaths Data
+tb_deaths_long <- tb_deaths_long |> 
+  pivot_longer(cols = -country, names_to = "year", values_to = "deaths_per_100k", names_prefix = "X") |> 
+  mutate(year = as.integer(year)) |> 
+  drop_na()
+
+# Pivot the Government Health Spending Data
+gov_health_spending_long <- gov_health_spending_long |> 
+  pivot_longer(cols = -country, names_to = "year", values_to = "gov_health_spending_usd", names_prefix = "X") |> 
+  mutate(year = as.integer(year)) |> 
+  drop_na()
+
+# Join the cleaned, long-format datasets
+combined_dataset_long_cleaned <- left_join(tb_deaths_long, gov_health_spending_long, by = c("country", "year"))
+
+# Remove any remaining rows with NAs
+combined_dataset_long_cleaned <- drop_na(combined_dataset_long_cleaned)
+
+# Write the cleaned, combined dataset to a CSV file
+write_csv(combined_dataset_long_cleaned, here("combined_dataset_long_cleaned.csv"))
+
+```
