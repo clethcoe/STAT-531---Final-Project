@@ -13,9 +13,9 @@ execute:
   echo: true
   message: false
   warning: false
-code-fold: show
+code-fold: true
 ---
-## Motivation and Data Description 
+## 1.10 Motivation and Data Description 
 
 As reported by the New York Times, tuberculosis (TB) has reclaimed the title of the world’s leading infectious disease killer as of November 2023, after being briefly removed from its long reign by Covid-19. The World Health Organization reports that nearly 40 percent of people who are living with TB are untreated and undiagnosed. Deaths from tuberculosis remain pronounced, with 1.36 million people dying from tuberculosis in 2022. 
 
@@ -25,15 +25,14 @@ Two data sets were chosen for this analysis: 1) the estimated numbers of deaths 
 
 The data sets were joined by country and only complete observations from 2000 - 2010 were included.
 
-#### Sources:
+### 1.11 Sources:
 Nolen, S. (2023, November 6) Ending TB Is Within Reach — So Why Are Millions Still Dying? *The New York Times*. [https://www.nytimes.com/2023/11/06/health/tuberculosis-tb-treatment-vaccine-diagnosis.html](https://www.nytimes.com/2023/11/06/health/tuberculosis-tb-treatment-vaccine-diagnosis.html)
 
 TB deaths per 100,000, estimated, all forms of TB: World Health Organization through gapminder.org
 
 Govt. health spending per person (US$): World Health Organization through gapminder.org
 
-## Data Cleaning 
-
+## 1.20 Data Cleaning 
 
 ```{r}
 library(tidyverse)
@@ -64,3 +63,9 @@ combined_dataset_long_cleaned <- drop_na(combined_dataset_long_cleaned)
 write_csv(combined_dataset_long_cleaned, here("combined_dataset_long_cleaned.csv"))
 
 ```
+### 1.21 Cleaned Combined Data Set Head
+```{r}
+head(combined_dataset_long_cleaned)
+
+```
+
