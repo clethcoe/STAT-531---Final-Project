@@ -77,7 +77,6 @@ head(combined_dataset_long_cleaned)
 
 ## 2.0 Data Visualization
 ```{r}
-#| include: false
 plot <- combined_dataset_long_cleaned |>
   ggplot(aes(
     x = gov_health_spending_usd, 
@@ -101,12 +100,47 @@ anim_save("animation.gif",animation = anim)
 ## 2.1 Linear Regression
 ### 2.11 Visualization
 ```{r}
-plot <- combined_dataset_long_cleaned |>
+combined_dataset_long_cleaned |>
   ggplot(aes(
     x = gov_health_spending_usd, 
     y = deaths_per_100k
   )) + 
   geom_point() +
+  geom_smooth(method = "lm")
+  
 
 ```
+When examining the raw data for each year of each countries deaths per 100k and government spending, we can see that it is not a great fit for a linear regression model. 
+
+```{r}
+combined_dataset_long_cleaned |> 
+  group_by(country) |> 
+  summarise(mean_deaths = mean(deaths_per_100k), 
+            mean_spending = mean(gov_health_spending_usd)) |>
+  ggplot(aes(x = mean_deaths, y = mean_spending)) +
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  xlab("Mean Government Spending in USD") + 
+  ylab("") + 
+  ggtitle("Mean Deaths Per 100 k")
+```
+To try to improve the accuracy of our model, we took the average average government spending and deaths per 100k for all recorded years for each country to try to even out any possible years that were creating outliers. This dataset proved to be no better fit for a linear regression model, so we continued the rest of our analysis with the original data set.
+
+#### 2.12 Creating the Regression Model
+
+```{r}
+combined_dataset_lm <- lm(deaths_per_100k ~ gov_health_spending_usd , 
+                          data = combined_dataset_long_cleaned)
+
+broom::tidy(combined_dataset_lm)
+```
+#### Linear Regression Equation
+Deaths_per_100k = 43.09345 - 0.01525(gov_health_spending_usd)
+
+#### Interpretation
+There is a negative correlation betweeb Deaths per 100K and Government Spending. Our model suggests that for every one unit increase in government spending, the deaths per 100k will decrease by 0.01525.
+```{r}
+summary(combined_dataset_lm)
+```
+With an R-squared value of about 0.051, our suspicions from the regression visualization are confirmed and our linear model is not a great fit for the data. Though our model is a poor predictor of the data trends, we can tell from our P-values (both < 2e-16) that there is a very strong correlation between these two variables. 
 
