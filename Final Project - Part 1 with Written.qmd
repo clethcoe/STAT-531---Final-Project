@@ -37,6 +37,9 @@ Govt. health spending per person (US$): World Health Organization through gapmin
 ```{r}
 library(tidyverse)
 library(here)
+library(ggplot2)
+library(gganimate)
+library(gifski)
 
 tb_deaths_long <- read_csv(here("all_forms_of_tb_deaths_per_100000_estimated.csv"))
 gov_health_spending_long <- read_csv(here("government_health_spending_per_person_us.csv"))
@@ -66,6 +69,44 @@ write_csv(combined_dataset_long_cleaned, here("combined_dataset_long_cleaned.csv
 ### 1.21 Cleaned Combined Data Set Head
 ```{r}
 head(combined_dataset_long_cleaned)
+
+```
+```{r}
+
+```
+
+## 2.0 Data Visualization
+```{r}
+#| include: false
+plot <- combined_dataset_long_cleaned |>
+  ggplot(aes(
+    x = gov_health_spending_usd, 
+    y = deaths_per_100k
+  )) + 
+  geom_point() +
+  labs(title = "Deaths Per 100k vs Gov Spending - Year: {frame_time}") +
+  transition_states(year, transition_length = 20, state_length = 10) + 
+  ease_aes('linear') + 
+  theme(aspect.ratio = 1)
+
+# Create the animation object
+anim <- animate(plot, nframes = 300, fps = 5, end_pause = 20,renderer=gifski_renderer())
+
+# Save the animation
+anim_save("animation.gif",animation = anim)
+#gifski::save_gif(anim, "animation.gif")
+```
+![](C:\\Users\\melan\\OneDrive\\STAT_531\\project\\Animation_trials\\Generated_animations\\trial_1_animation.gif)
+
+## 2.1 Linear Regression
+### 2.11 Visualization
+```{r}
+plot <- combined_dataset_long_cleaned |>
+  ggplot(aes(
+    x = gov_health_spending_usd, 
+    y = deaths_per_100k
+  )) + 
+  geom_point() +
 
 ```
 
