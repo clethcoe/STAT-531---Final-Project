@@ -15,14 +15,6 @@ execute:
   warning: false
 code-fold: true
 ---
-<<<<<<< HEAD
-
-E. Robinson
-You might find the visual editor with insert > citations useful! Love the intro -- "long reign" :) How many countries are in the final data set? Data source? Recall inner_join() keeps complete values. If you write the file, you only have to write this out once then you can load it back in. It is nice to see the head of the data at this step, but not necessary for the final report. This should read like a scientific article so you don't have to have section headers for all the parts -- these can all be in your "intro" per say -- I like the motivation header!
-
-## 1.10 Motivation and Data Description 
-=======
->>>>>>> 44592e5f8fcff75266a0fa80eb0a9d810daabde3
 
 ## 1.10 Motivation and Data Description
 
