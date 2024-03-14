@@ -139,7 +139,7 @@ From these plots, it becomes clearer to see that as government spending increase
 
 ## 2.1 Linear Regression
 
-To explore the relationship between government spending and deaths caused by TB, we took the average government spending and average deaths per 100k for all recorded years for each country and fit a linear regression to the dataset. 
+To further explore the relationship between government spending and deaths caused by TB, we took the average government spending and average deaths per 100k for all recorded years for each country and fit a linear regression to the dataset. 
 
 ### 2.11 Visualization
 
