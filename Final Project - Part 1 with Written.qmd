@@ -104,7 +104,7 @@ anim <- animate(plot,nframes = 10 , duration = 20, renderer=gifski_renderer())
 anim_save("Animation_trials/Generated_animations/animation.gif",animation = anim)
 anim
 ```
-Over time, the amount of government spending per person increased on average. The relationship between deaths per 100k and government spending displays an exponential decay overtime, suggesting that as government spending increases, the number of deaths ber 100k decreases.
+Over time, the amount of government spending per person increased on average. The relationship between deaths per 100k and government spending displays an exponential decay overtime, suggesting that as government spending increases, the number of deaths per 100k decreases. To confirm this inference, we created density plots of deaths per 100k and government spending per person to show how the proportional distribution changes overtime.
 
 ```{r}
 
@@ -135,7 +135,7 @@ anim_2
 ```{r}
 anim_3
 ```
-
+From these plots, it becomes clearer to see that as government spending increased overtime, the number of deaths per 100k decreased.
 
 ## 2.1 Linear Regression
 
