@@ -15,6 +15,10 @@ execute:
   warning: false
 code-fold: true
 ---
+
+E. Robinson
+You might find the visual editor with insert > citations useful! Love the intro -- "long reign" :) How many countries are in the final data set? Data source? Recall inner_join() keeps complete values. If you write the file, you only have to write this out once then you can load it back in. It is nice to see the head of the data at this step, but not necessary for the final report. This should read like a scientific article so you don't have to have section headers for all the parts -- these can all be in your "intro" per say -- I like the motivation header!
+
 ## 1.10 Motivation and Data Description 
 
 As reported by the New York Times, tuberculosis (TB) has reclaimed the title of the world’s leading infectious disease killer as of November 2023, after being briefly removed from its long reign by Covid-19. The World Health Organization reports that nearly 40 percent of people who are living with TB are untreated and undiagnosed. Deaths from tuberculosis remain pronounced, with 1.36 million people dying from tuberculosis in 2022. 
