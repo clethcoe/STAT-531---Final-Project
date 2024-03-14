@@ -100,7 +100,7 @@ plot <- combined_dataset_long_cleaned |>
 anim <- animate(plot,nframes = 10 , duration = 20, renderer=gifski_renderer())
 
 # Save the animation
-anim_save("animation.gif",animation = anim)
+anim_save("Animation_trials/Generated_animations/animation.gif",animation = anim)
 anim
 ```
 ## 2.1 Linear Regression
