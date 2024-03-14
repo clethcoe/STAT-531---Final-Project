@@ -43,6 +43,7 @@ Govt. health spending per person (US\$): World Health Organization through gapmi
 library(tidyverse)
 library(here)
 library(ggplot2)
+library(gridExtra)
 library(gganimate)
 library(gifski)
 
@@ -76,10 +77,10 @@ write_csv(combined_dataset_long_cleaned, here("combined_dataset_long_cleaned.csv
 
 ```{r}
 head(combined_dataset_long_cleaned)
-
 ```
 
 ## 2.0 Data Visualization
+To examine how the relationship between our two variables of interest changed over time, we created an animated plot that shows deaths per 100k vs government spending per person in USD for every country in every year of the study (2000 - 2010).
 
 ```{r}
 plot <- combined_dataset_long_cleaned |>
@@ -103,6 +104,39 @@ anim <- animate(plot,nframes = 10 , duration = 20, renderer=gifski_renderer())
 anim_save("animation.gif",animation = anim)
 anim
 ```
+Over time, the amount of government spending per person increased on average. The relationship between deaths per 100k and government spending displays an exponential decay overtime, suggesting that as government spending increases, the number of deaths ber 100k decreases.
+
+```{r}
+
+## Density plot of deaths per 100k
+plot_2 <- combined_dataset_long_cleaned |>
+  ggplot(aes(x = deaths_per_100k)) +
+  geom_density(fill = "skyblue", color = "black") +
+  labs(title = "Density Plot of Deaths Per 100k - Year: {frame_time}") +
+  transition_time(year) + 
+  ease_aes('linear') + 
+  theme(aspect.ratio = 1)
+
+anim_2 <- animate(plot_2,nframes = 10 , duration = 20, renderer=gifski_renderer())
+
+# Density plot of gov spending.
+plot_3 <- combined_dataset_long_cleaned |>
+  ggplot(aes(x = gov_health_spending_usd)) +
+  geom_density(fill = "skyblue", color = "black") +
+  labs(title = "Density Plot of Gov Spending Per Person in USD - Year: {frame_time}") +
+  transition_time(year) + 
+  ease_aes('linear') + 
+  theme(aspect.ratio = 1)
+
+anim_3 <- animate(plot_3,nframes = 10 , duration = 20, renderer=gifski_renderer())
+anim_2
+
+```
+```{r}
+anim_3
+```
+
+
 ## 2.1 Linear Regression
 
 To explore the relationship between government spending and deaths caused by TB, we took the average government spending and average deaths per 100k for all recorded years for each country and fit a linear regression to the dataset. 
