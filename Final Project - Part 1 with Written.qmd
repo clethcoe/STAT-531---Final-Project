@@ -101,7 +101,7 @@ plot <- combined_dataset_long_cleaned |>
 anim <- animate(plot,nframes = 10 , duration = 20, renderer=gifski_renderer())
 
 # Save the animation
-anim_save("animation.gif",animation = anim)
+anim_save("Animation_trials/Generated_animations/animation.gif",animation = anim)
 anim
 ```
 Over time, the amount of government spending per person increased on average. The relationship between deaths per 100k and government spending displays an exponential decay overtime, suggesting that as government spending increases, the number of deaths ber 100k decreases.
