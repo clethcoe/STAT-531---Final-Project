@@ -194,6 +194,6 @@ With an R-squared value of about 0.051, our suspicions from the regression visua
 
 Nolen, S. (2023, November 6) Ending TB Is Within Reach --- So Why Are Millions Still Dying? *The New York Times*. <https://www.nytimes.com/2023/11/06/health/tuberculosis-tb-treatment-vaccine-diagnosis.html>
 
-TB deaths per 100,000, estimated, all forms of TB: World Health Organization through gapminder.org
+TB deaths per 100,000, estimated, all forms of TB: World Health Organization through [gapminder.org](https://www.gapminder.org/data/)
 
-Govt. health spending per person (US\$): World Health Organization through gapminder.org
+Govt. health spending per person (US\$): World Health Organization through [gapminder.org](https://www.gapminder.org/data/)
