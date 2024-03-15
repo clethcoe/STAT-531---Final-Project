@@ -1,5 +1,5 @@
 ---
-title: "Final Project - Part 1"
+title: "Final Project"
 author: "Owen Bachhuber, Melanie Mitton, Magdalene Lo, Corban Lethcoe"
 format: 
   html:
@@ -14,27 +14,22 @@ execute:
   message: false
   warning: false
 code-fold: true
+bibliography: references.bib
 ---
 
-## 1.10 Motivation and Data Description
+## Introduction
 
-As reported by the New York Times, tuberculosis (TB) has reclaimed the title of the world’s leading infectious disease killer as of November 2023, after being briefly removed from its long reign by Covid-19. The World Health Organization reports that nearly 40 percent of people who are living with TB are untreated and undiagnosed. Deaths from tuberculosis remain pronounced, with 1.36 million people dying from tuberculosis in 2022.
+### Motivation 
+
+As reported by the [New York Times](https://www.nytimes.com/2023/11/06/health/tuberculosis-tb-treatment-vaccine-diagnosis.html), tuberculosis (TB) has reclaimed the title of the world's leading infectious disease killer as of November 2023, after being briefly removed from its long reign by Covid-19. The World Health Organization reports that nearly 40 percent of people who are living with TB are untreated and undiagnosed. Deaths from tuberculosis remain pronounced, with 1.36 million people dying from tuberculosis in 2022.
 
 This project aims to better contextualize the relationship between a government spending and tuberculosis on a country-by-country basis. We hypothesize that the countries that spend more on healthcare per person also see fewer deaths from tuberculosis.
 
+### Source Data
+
 Two data sets were chosen for this analysis: 1) the estimated numbers of deaths caused by TB (all forms) among 100,000 residents during the given year from 2000 - 2015 sorted by country, and 2) the average health expenditures per person paid by government entities from 1995 - 2010 expressed in US dollars using the average exchange rate.
 
-The data sets were joined by country and only complete observations from 2000 - 2010 were included.
-
-### 1.11 Sources:
-
-Nolen, S. (2023, November 6) Ending TB Is Within Reach — So Why Are Millions Still Dying? *The New York Times*. <https://www.nytimes.com/2023/11/06/health/tuberculosis-tb-treatment-vaccine-diagnosis.html>
-
-TB deaths per 100,000, estimated, all forms of TB: World Health Organization through gapminder.org
-
-Govt. health spending per person (US\$): World Health Organization through gapminder.org
-
-## 1.20 Data Cleaning
+The data sets were joined by country and only complete observations from 2000 - 2010 were included. The TB deaths data included 216 countries while the government healthcare spending data included 192 countries. Our combined dataset included 216 countries WHICH DOESN'T MAKE SENSE.
 
 ```{r}
 #| message: false
@@ -50,10 +45,19 @@ library(gifski)
 tb_deaths_long <- read_csv(here("all_forms_of_tb_deaths_per_100000_estimated.csv"))
 gov_health_spending_long <- read_csv(here("government_health_spending_per_person_us.csv"))
 
+# Count the number of countries in the source data
+tb_deaths_long <- tb_deaths_long |>
+  mutate(country = as.factor(country))
+         nlevels(tb_deaths_long$country)
+
+gov_health_spending_long <- gov_health_spending_long |>
+  mutate(country = as.factor(country))
+         nlevels(gov_health_spending_long$country)
+         
 # Pivot the Tuberculosis Deaths Data
 tb_deaths_long <- tb_deaths_long |> 
   pivot_longer(cols = -country, names_to = "year", values_to = "deaths_per_100k", names_prefix = "X") |> 
-  mutate(year = as.integer(year)) |> 
+  mutate(year = as.integer(year)) |>
   drop_na()
 
 # Pivot the Government Health Spending Data
@@ -63,7 +67,7 @@ gov_health_spending_long <- gov_health_spending_long |>
   drop_na()
 
 # Join the cleaned, long-format datasets
-combined_dataset_long_cleaned <- left_join(tb_deaths_long, gov_health_spending_long, by = c("country", "year"))
+combined_dataset_long_cleaned <- inner_join(tb_deaths_long, gov_health_spending_long, by = c("country", "year"))
 
 # Remove any remaining rows with NAs
 combined_dataset_long_cleaned <- drop_na(combined_dataset_long_cleaned)
@@ -71,15 +75,13 @@ combined_dataset_long_cleaned <- drop_na(combined_dataset_long_cleaned)
 # Write the cleaned, combined dataset to a CSV file
 write_csv(combined_dataset_long_cleaned, here("combined_dataset_long_cleaned.csv"))
 
+# Count the number of countries in the final dataset
+nlevels(combined_dataset_long_cleaned$country)
+
 ```
 
-### 1.21 Cleaned Combined Data Set Head
+## Data Visualization
 
-```{r}
-head(combined_dataset_long_cleaned)
-```
-
-## 2.0 Data Visualization
 To examine how the relationship between our two variables of interest changed over time, we created an animated plot that shows deaths per 100k vs government spending per person in USD for every country in every year of the study (2000 - 2010).
 
 ```{r}
@@ -104,6 +106,7 @@ anim <- animate(plot,nframes = 10 , duration = 20, renderer=gifski_renderer())
 anim_save("Animation_trials/Generated_animations/animation.gif",animation = anim)
 anim
 ```
+
 Over time, the amount of government spending per person increased on average. The relationship between deaths per 100k and government spending displays an exponential decay overtime, suggesting that as government spending increases, the number of deaths per 100k decreases. To confirm this inference, we created density plots of deaths per 100k and government spending per person to show how the proportional distribution changes overtime.
 
 ```{r}
@@ -132,16 +135,18 @@ anim_3 <- animate(plot_3,nframes = 10 , duration = 20, renderer=gifski_renderer(
 anim_2
 
 ```
+
 ```{r}
 anim_3
 ```
+
 From these plots, it becomes clearer to see that as government spending increased overtime, the number of deaths per 100k decreased.
 
-## 2.1 Linear Regression
+## Linear Regression
 
-To further explore the relationship between government spending and deaths caused by TB, we took the average government spending and average deaths per 100k for all recorded years for each country and fit a linear regression to the dataset. 
+To further explore the relationship between government spending and deaths caused by TB, we took the average government spending and average deaths per 100k for all recorded years for each country and fit a linear regression to the dataset.
 
-### 2.11 Visualization
+### Visualization
 
 ```{r}
 combined_dataset_long_cleaned |> 
@@ -156,9 +161,7 @@ combined_dataset_long_cleaned |>
   ggtitle("Mean Deaths Per 100 k")
 ```
 
-
-
-#### 2.12 Creating the Regression Model
+#### Creating the Regression Model
 
 ```{r}
 combined_dataset_long_av <- combined_dataset_long_cleaned |> 
@@ -179,10 +182,18 @@ av_deaths_per_100k = 44.52 - 0.017(av_gov_health_spending_usd)
 
 #### Interpretation
 
-There is a negative correlation between Deaths per 100K and Government Spending. Our model suggests that for every $1000(USD) spent by a government on healthcare, 17 people per 100,000 can be saved from dying of TB.
+There is a negative correlation between Deaths per 100K and Government Spending. Our model suggests that for every \$1000(USD) spent by a government on healthcare, 17 people per 100,000 can be saved from dying of TB.
 
 ```{r}
 summary(combined_dataset_lm)
 ```
 
 With an R-squared value of about 0.051, our suspicions from the regression visualization are confirmed and our linear model is not a great fit for the data. Though our model is a poor predictor of the data trends, we can tell from our P-values (both \< 2e-16) that there is a very strong correlation between these two variables.
+
+## Sources
+
+Nolen, S. (2023, November 6) Ending TB Is Within Reach --- So Why Are Millions Still Dying? *The New York Times*. <https://www.nytimes.com/2023/11/06/health/tuberculosis-tb-treatment-vaccine-diagnosis.html>
+
+TB deaths per 100,000, estimated, all forms of TB: World Health Organization through gapminder.org
+
+Govt. health spending per person (US\$): World Health Organization through gapminder.org
