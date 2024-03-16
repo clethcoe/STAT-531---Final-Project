@@ -41,6 +41,8 @@ library(ggplot2)
 library(gridExtra)
 library(gganimate)
 library(gifski)
+library(kableExtra)
+
 
 tb_deaths_long <- read_csv(here("all_forms_of_tb_deaths_per_100000_estimated.csv"))
 gov_health_spending_long <- read_csv(here("government_health_spending_per_person_us.csv"))
@@ -173,7 +175,10 @@ combined_dataset_long_av <- combined_dataset_long_cleaned |>
 combined_dataset_lm <- lm(av_deaths_per_100k ~ av_gov_health_spending_usd , 
                           data = combined_dataset_long_av)
 
-broom::tidy(combined_dataset_lm)
+broom::tidy(combined_dataset_lm) |>
+  kable() |> 
+  kable_styling(bootstrap_options = "striped",
+                position = "center")
 ```
 
 #### Linear Regression Equation
