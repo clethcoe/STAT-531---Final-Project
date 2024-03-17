@@ -272,6 +272,41 @@ obs_p + new_p
 
 ```
 
+```{r}
+nsims <- 100
+sims <- map_dfc(.x = 1:nsims,
+                .f = ~ tibble(sim = noise(tb_predict, 
+                                          sd = tb_sigma)
+                              )
+                )
+
+colnames(sims) <- colnames(sims) |> 
+  str_replace(pattern = "\\.\\.\\.",
+                  replace = "_")
+
+sims <- combined_dataset_long_av |> 
+  filter(!is.na(av_deaths_per_100k), 
+         !is.na(av_gov_health_spending_usd)) |> 
+  select(av_deaths_per_100k) |> 
+  bind_cols(sims)
+
+sim_r_sq <- sims |> 
+  map(~ lm(av_deaths_per_100k ~ .x, data = sims)) |> 
+  map(glance) |> 
+  map_dbl(~ .x$r.squared)
+
+sim_r_sq <- sim_r_sq[names(sim_r_sq) != "av_deaths_per_100k"]
+
+tibble(sims = sim_r_sq) |> 
+  ggplot(aes(x = sims)) + 
+  geom_histogram(binwidth = 0.025) +
+  labs(x = expression("Simulated"~ R^2),
+       y = "",
+       subtitle = "Number of Simulated Models") +
+  theme_bw()
+
+```
+
 ## Sources
 
 Nolen, S. (2023, November 6) Ending TB Is Within Reach --- So Why Are Millions Still Dying? *The New York Times*. <https://www.nytimes.com/2023/11/06/health/tuberculosis-tb-treatment-vaccine-diagnosis.html>
