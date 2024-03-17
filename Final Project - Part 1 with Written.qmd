@@ -43,6 +43,7 @@ library(gganimate)
 library(gifski)
 library(kableExtra)
 library(broom)
+library(patchwork)
 
 
 tb_deaths_long <- read_csv(here("all_forms_of_tb_deaths_per_100000_estimated.csv"))
@@ -220,6 +221,54 @@ ggplot(aes(x = .fitted, y = .resid)) +
 broom::augment(combined_dataset_lm) |> 
   select(2,1,3,4) |> 
   
+
+```
+
+## Simulating the data
+
+```{r}
+# Obstain predictions
+tb_predict <- predict(combined_dataset_lm)
+head(tb_predict)
+
+# Caclculate residual standard error
+tb_sigma <- sigma(combined_dataset_lm)
+tb_sigma
+
+# Create a function for noise
+noise <- function(x, mean = 0, sd){
+  x + rnorm(length(x), 
+            mean, 
+            sd)
+}
+
+# Generate a fake dataset
+sim_response <- tibble(sim_deaths_per_100k = noise(tb_predict, 
+                                           sd = tb_sigma)
+                   )
+# Make a histogram comparing the actual and simulated data
+obs_p <- combined_dataset_long_av |>
+  ggplot(aes(x = av_deaths_per_100k)) +
+  geom_histogram(color = "white"
+                 ) +
+  labs(x = "Actual TB Deaths per 100k People",
+       y = "",
+       subtitle = "Count") +
+  xlim(-200, 350) +
+  theme_bw()
+
+new_p <- sim_response |>
+  ggplot(aes(x = sim_deaths_per_100k)) +
+  geom_histogram(color = "white"
+                 ) +
+  labs(x = "Simulated TB Deaths per 100k People",
+       y = "",
+       subtitle = "Count") +
+  xlim(-200, 350) +
+  theme_bw()
+
+
+obs_p + new_p
 
 ```
 
