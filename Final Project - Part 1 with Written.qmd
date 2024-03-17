@@ -51,11 +51,11 @@ gov_health_spending_long <- read_csv(here("government_health_spending_per_person
 # Count the number of countries in the source data
 tb_deaths_long <- tb_deaths_long |>
   mutate(country = as.factor(country))
-         nlevels(tb_deaths_long$country)
+         length(unique(tb_deaths_long$country))
 
 gov_health_spending_long <- gov_health_spending_long |>
   mutate(country = as.factor(country))
-         nlevels(gov_health_spending_long$country)
+         length(unique(gov_health_spending_long$country))
          
 # Pivot the Tuberculosis Deaths Data
 tb_deaths_long <- tb_deaths_long |> 
@@ -80,7 +80,6 @@ combined_dataset_long_cleaned <- drop_na(combined_dataset_long_cleaned)
 write_csv(combined_dataset_long_cleaned, here("combined_dataset_long_cleaned.csv"))
 
 # Count the number of countries in the final dataset
-nlevels(combined_dataset_long_cleaned$country)
 length(unique(combined_dataset_long_cleaned$country))
 
 ```
