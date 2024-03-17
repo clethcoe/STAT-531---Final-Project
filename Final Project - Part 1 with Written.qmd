@@ -201,26 +201,18 @@ There is a negative correlation between Deaths per 100K and Government Spending.
 
 With an R-squared value of about 0.051, our suspicions from the regression visualization are confirmed and our linear model is not a great fit for the data. Though our model is a poor predictor of the data trends, we can tell from our P-values (both \< 0.001) that there is a very strong correlation between these two variables.
 
-```{r}
-anova(combined_dataset_lm)  
-```
-
-```{r}
-combined_dataset_lm |> 
-  augment() |> 
-ggplot(aes(x = .fitted, y = .resid)) +
-  geom_point() +
-  theme_bw()+
-  labs(x = "Fitted values of linear regression",
-       y = "", 
-       subtitle = "Residuals of fitted values of linear regression")
-
-```
 
 ```{r}
 broom::augment(combined_dataset_lm) |> 
-  select(2,1,3,4) |> 
-  
+  select(1,3,4) |> 
+  map(.f = ~ var(.x)) |> 
+  as.tibble() |> 
+  rename("variance of average deaths per 100k" = av_deaths_per_100k,
+         "variance of fitted data" = .fitted,
+         "variance of residuals" = .resid) |> 
+  kable() |> 
+  kable_styling(bootstrap_options = "striped",
+                position = "center")
 
 ```
 
@@ -229,11 +221,13 @@ broom::augment(combined_dataset_lm) |>
 To test how well the linear model fits our data, we created simulated data from the linear model. If these data are similar to the actual data gathered by the WHO, then we can be confident in our linear model. Below is our actual TB deaths data (left) and simulated TB deaths data (right).
 
 ```{r}
-# Obstain predictions
+#| layout-ncol: 2
+
+# Obtain predictions
 tb_predict <- predict(combined_dataset_lm)
 head(tb_predict)
 
-# Caclculate residual standard error
+# Calculate residual standard error
 tb_sigma <- sigma(combined_dataset_lm)
 tb_sigma
 
@@ -270,14 +264,15 @@ new_p <- sim_response |>
   theme_bw()
 
 
-obs_p + new_p
+obs_p 
+new_p
 
 ```
 
-As can be seen from the histograms, the simulated data and actual data both have a mean slightly above zero. The actual have a negative exponential distribution. Most countries have very few deaths from TB and there are only a few countries with hundereds of deaths per 100,000 people. By contrast, the simulated data are normally distributed, with nearly half of the simulated deaths falling below zero. Negative values for deaths are not possible in this context. We can already visually tell that our model does not explain the data well. We then conducted an R^2^ analysis to see how much of the variability in the actual data was explained by the predicted values.
+As can be seen from the histograms, the simulated data and actual data both have a mean slightly above zero. The actual data have a negative exponential distribution. Most countries have very few deaths from TB and there are only a few countries with hundereds of deaths per 100,000 people. By contrast, the simulated data are normally distributed, with nearly half of the simulated deaths falling below zero. Negative values for deaths are not possible in this context. We can already visually tell that our model does not explain the data well. We then conducted an R^2^ analysis to see how much of the variability in the actual data was explained by the predicted values.
 
 ```{r}
-nsims <- 100
+nsims <- 1000
 sims <- map_dfc(.x = 1:nsims,
                 .f = ~ tibble(sim = noise(tb_predict, 
                                           sd = tb_sigma)
