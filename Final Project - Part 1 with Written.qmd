@@ -224,7 +224,9 @@ broom::augment(combined_dataset_lm) |>
 
 ```
 
-## Simulating the data
+## Predictive Checks
+
+To test how well the linear model fits our data, we created simulated data from the linear model. If these data are similar to the actual data gathered by the WHO, then we can be confident in our linear model. Below is our actual TB deaths data (left) and simulated TB deaths data (right).
 
 ```{r}
 # Obstain predictions
@@ -272,6 +274,8 @@ obs_p + new_p
 
 ```
 
+As can be seen from the histograms, the simulated data and actual data both have a mean slightly above zero. The actual have a negative exponential distribution. Most countries have very few deaths from TB and there are only a few countries with hundereds of deaths per 100,000 people. By contrast, the simulated data are normally distributed, with nearly half of the simulated deaths falling below zero. Negative values for deaths are not possible in this context. We can already visually tell that our model does not explain the data well. We then conducted an R^2^ analysis to see how much of the variability in the actual data was explained by the predicted values.
+
 ```{r}
 nsims <- 100
 sims <- map_dfc(.x = 1:nsims,
@@ -306,6 +310,8 @@ tibble(sims = sim_r_sq) |>
   theme_bw()
 
 ```
+
+The R^2^ values for the simulated and actual data are extremely low. Across 100 iterations of simulated data, the variability in predicted values explained zero to six percent of the variation in the actual values for TB deaths per 100,000 people. This further confirms that a linear regression is not appropriate for these data.
 
 ## Sources
 
