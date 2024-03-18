@@ -21,15 +21,15 @@ bibliography: references.bib
 
 ### Motivation
 
-As reported by the [New York Times](https://www.nytimes.com/2023/11/06/health/tuberculosis-tb-treatment-vaccine-diagnosis.html), tuberculosis (TB) is again the world's leading infectious disease killer as of November 2023, after being briefly surpassed by COVID-19. The World Health Organization reports that nearly 40 percent of people who are living with TB are untreated and undiagnosed. Despite being a preventable and treatable disease, 1.36 million people died from tuberculosis in 2022.
+As reported by the [New York Times](https://www.nytimes.com/2023/11/06/health/tuberculosis-tb-treatment-vaccine-diagnosis.html), tuberculosis (TB) has reclaimed the title of the world's leading infectious disease killer as of November 2023, after being briefly removed from its long reign by Covid-19. The World Health Organization reports that nearly 40 percent of people who are living with TB are untreated and undiagnosed. Deaths from tuberculosis remain pronounced, with 1.36 million people dying from tuberculosis in 2022.
 
-This project aims to better contextualize the relationship between government healthcare spending and tuberculosis on a country-by-country basis. We hypothesize that the countries that spend more on healthcare per person also see fewer deaths from tuberculosis.
+This project aims to better contextualize the relationship between a government spending and tuberculosis on a country-by-country basis. We hypothesize that the countries that spend more on healthcare per person also see fewer deaths from tuberculosis.
 
 ### Source Data
 
 Two data sets were chosen for this analysis: 1) the estimated numbers of deaths caused by TB (all forms) among 100,000 residents during the given year from 2000 - 2015 sorted by country, and 2) the average health expenditures per person paid by government entities from 1995 - 2010 expressed in US dollars using the average exchange rate.
 
-The data sets were joined by country and only complete observations from 2000 - 2010 were included. The TB deaths data included 216 countries while the government healthcare spending data included 192 countries. Our combined dataset includes 192 countries.
+The data sets were joined by country and only complete observations from 2000 - 2010 were included. The TB deaths data included 216 countries while the government healthcare spending data included 192 countries. Our combined dataset included 192 countries.
 
 ```{r}
 #| message: false
@@ -52,11 +52,11 @@ gov_health_spending_long <- read_csv(here("government_health_spending_per_person
 # Count the number of countries in the source data
 tb_deaths_long <- tb_deaths_long |>
   mutate(country = as.factor(country))
-#         length(unique(tb_deaths_long$country))
+         length(unique(tb_deaths_long$country))
 
 gov_health_spending_long <- gov_health_spending_long |>
   mutate(country = as.factor(country))
-#         length(unique(gov_health_spending_long$country))
+         length(unique(gov_health_spending_long$country))
          
 # Pivot the Tuberculosis Deaths Data
 tb_deaths_long <- tb_deaths_long |> 
@@ -81,13 +81,13 @@ combined_dataset_long_cleaned <- drop_na(combined_dataset_long_cleaned)
 write_csv(combined_dataset_long_cleaned, here("combined_dataset_long_cleaned.csv"))
 
 # Count the number of countries in the final dataset
-#length(unique(combined_dataset_long_cleaned$country))
+length(unique(combined_dataset_long_cleaned$country))
 
 ```
 
 ## Data Visualization
 
-To examine how the relationship between our two variables of interest changed over time, we created an animated plot that shows deaths per 100k vs government healthcare spending per person in USD for every country in every year of the study (2000 - 2010).
+To examine how the relationship between our two variables of interest changed over time, we created an animated plot that shows deaths per 100k vs government spending per person in USD for every country in every year of the study (2000 - 2010).
 
 ```{r}
 plot <- combined_dataset_long_cleaned |>
@@ -112,9 +112,9 @@ anim_save("Animation_trials/Generated_animations/animation.gif",animation = anim
 anim
 ```
 
-Over time, the amount of government spending per person increased on average. The relationship between deaths per 100k and government spending displays a hyperbolic relationship over time, suggesting that as government spending increases, the number of deaths per 100k decreases. To confirm this inference, we created density plots of deaths per 100k and government healthcare spending per person to show how the proportional distribution changes over time. 
+Over time, the amount of government spending per person increased on average. The relationship between deaths per 100k and government spending displays an exponential decay overtime, suggesting that as government spending increases, the number of deaths per 100k decreases. To confirm this inference, we created density plots of deaths per 100k and government spending per person to show how the proportional distribution changes overtime.
 
-```{r }
+```{r}
 
 ## Density plot of deaths per 100k
 plot_2 <- combined_dataset_long_cleaned |>
@@ -145,19 +145,17 @@ plot_3 <- combined_dataset_long_cleaned |>
 anim_3 <- animate(plot_3,nframes = 10 , duration = 20, renderer=gifski_renderer())
 anim_2
 
-
 ```
 
 ```{r}
 anim_3
 ```
 
-
-From these plots, it becomes clearer that as government healthcare spending increased over time, the number of deaths per 100k decreased.
+From these plots, it becomes clearer that as government spending increased over time, the number of deaths per 100k decreased.
 
 ## Linear Regression
 
-To further explore the relationship between government spending and deaths caused by TB, we took the average government spending and average deaths per 100k for all recorded years for each country and fit a linear regression to the dataset. Each point represents one country.
+To further explore the relationship between government spending and deaths caused by TB, we took the average government spending and average deaths per 100k for all recorded years for each country and fit a linear regression to the dataset.
 
 ### Visualization
 
@@ -167,16 +165,11 @@ combined_dataset_long_cleaned |>
   summarise(mean_deaths = mean(deaths_per_100k), 
             mean_spending = mean(gov_health_spending_usd)) |>
   ggplot(aes(x = mean_deaths, y = mean_spending)) +
-  geom_point(shape = 21,
-             size = 2.5,
-             color = "black",
-             fill = "skyblue"
-             ) + 
-  geom_smooth(method = "lm",
-              color = "black") + 
-  xlab("Mean Government Spending per Person, USD") + 
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  xlab("Mean Government Spending per Country, USD") + 
   ylab("") + 
-  ggtitle("Mean TB Deaths per 100k")+
+  ggtitle("Mean Deaths per 100k per Country")+
   theme_bw()
 ```
 
@@ -200,24 +193,23 @@ broom::tidy(combined_dataset_lm) |>
 
 #### Linear Regression Equation
 
-Average TB deaths per 100,000 = 44.52 - 0.017(Average government healthcare spending per person, USD)
+$\text{Average Deaths per 100k} = 44.52 - 0.017 \times \text{Average Government Health Spending (USD)}$
 
 #### Interpretation
 
-There is a negative correlation between average TB deaths per 100k and average government healthcare spending per person. Our model suggests that for every \$1000(USD) spent by a government on healthcare, on average, 17 people per 100,000 are prevented from dying of TB. It also suggests that if a government does not spend anything per person on healthcare, on average, 44 people out of 100,000 will die of TB per year. However, the relationship between government healthcare spending and TB deaths is not linear and is more similar to a hyperbolic relationship. There is a large amount of variation in average number of TB deaths between countries that spend very little per person on healthcare, and many countries see very few deaths due to TB despite spending very much or little per person on healthcare. Therefore, as a violation of one of the conditions (a linear relationship between *x* and *y*), we would not lean heavily on the results of this linear regression. 
+There is a negative correlation between Deaths per 100K and Government Spending. Our model suggests that for every \$1000(USD) spent by a government on healthcare, on average, 17 people per 100,000 can be saved from dying of TB. It also suggests that if a government does not spend anything per person on healthcare, 44 people out of 100,000 will die of TB per year on average. However, the relationship between government healthcare spending and TB deaths is not linear and is more similar to a hyperbolic relationship. There is a large amount of variation in average number of TB deaths between countries that spend very little per person on healthcare, and many countries see very few deaths due to TB despite spending very much or little per person on healthcare. This suggests that there are many more factors besides just government healthcare spending that affect average yearly deaths due to TB. These may include the cost and accessibility of TB screening and drugs, the ratio of healthcare workers to citizens, how often TB drug regimens can be completed, the rate of TB transmission, and many more.
 
-With an R^2^ value of about 0.051, our suspicions from the regression visualization are confirmed and our linear model is not a great fit for the data. Though our model is a poor predictor of the data trends, we can tell from the P-values (both \< 0.001) that there is a very strong correlation between these government healthcare spending and TB deaths.
+With an R-squared value of about 0.051, our suspicions from the regression visualization are confirmed and our linear model is not a great fit for the data. Though our model is a poor predictor of the data trends, we can tell from our P-values (both \< 0.001) that there is a very strong correlation between these two variables.
 
-Additionally, the variance of the fitted values only explain about 6\% of the variability of the response variable (below). The average number of deaths due to TB is only explained in part by government healthcare spending, and the remaining 94\% is unaccounted for in this model. These other factors affecting average TB deaths may include the cost and accessibility of TB screening and drugs, the ratio of healthcare workers to citizens, how often TB drug regimens can be completed, the rate of TB transmission, and many more.  
 
 ```{r}
 broom::augment(combined_dataset_lm) |> 
   select(1,3,4) |> 
   map(.f = ~ var(.x)) |> 
   as.tibble() |> 
-  rename("Variance of average deaths per 100k" = av_deaths_per_100k,
-         "Variance of fitted values" = .fitted,
-         "Variance of residuals" = .resid) |> 
+  rename("variance of average deaths per 100k" = av_deaths_per_100k,
+         "variance of fitted data" = .fitted,
+         "variance of residuals" = .resid) |> 
   kable() |> 
   kable_styling(bootstrap_options = "striped",
                 position = "center")
@@ -233,11 +225,11 @@ To test how well the linear model fits our data, we created simulated data from 
 
 # Obtain predictions
 tb_predict <- predict(combined_dataset_lm)
-#head(tb_predict)
+head(tb_predict)
 
 # Calculate residual standard error
 tb_sigma <- sigma(combined_dataset_lm)
-#tb_sigma
+tb_sigma
 
 # Create a function for noise
 noise <- function(x, mean = 0, sd){
@@ -253,8 +245,7 @@ sim_response <- tibble(sim_deaths_per_100k = noise(tb_predict,
 # Make a histogram comparing the actual and simulated data
 obs_p <- combined_dataset_long_av |>
   ggplot(aes(x = av_deaths_per_100k)) +
-  geom_histogram(color = "black",
-                 fill = "skyblue"
+  geom_histogram(color = "white"
                  ) +
   labs(x = "Actual TB Deaths per 100k People",
        y = "",
@@ -264,8 +255,7 @@ obs_p <- combined_dataset_long_av |>
 
 new_p <- sim_response |>
   ggplot(aes(x = sim_deaths_per_100k)) +
-  geom_histogram(color = "black",
-                 fill = "skyblue"
+  geom_histogram(color = "white"
                  ) +
   labs(x = "Simulated TB Deaths per 100k People",
        y = "",
@@ -279,7 +269,7 @@ new_p
 
 ```
 
-As can be seen from the histograms, the simulated data and actual data both have a mean slightly above zero. The actual data have a negative exponential distribution. Most countries have very few deaths from TB and there are only a few countries with hundreds of deaths per 100,000 people. By contrast, the simulated data are normally distributed, with nearly half of the simulated deaths falling below zero. Negative values for deaths are not possible in this context. We can tell by visual analysis that our model does not explain the data well. We then conducted an R^2^ analysis to see how much of the variability in the actual data was explained by the predicted values.
+As can be seen from the histograms, the simulated data and actual data both have a mean slightly above zero. The actual data have a negative exponential distribution. Most countries have very few deaths from TB and there are only a few countries with hundereds of deaths per 100,000 people. By contrast, the simulated data are normally distributed, with nearly half of the simulated deaths falling below zero. Negative values for deaths are not possible in this context. We can already visually tell that our model does not explain the data well. We then conducted an R^2^ analysis to see how much of the variability in the actual data was explained by the predicted values.
 
 ```{r}
 nsims <- 1000
@@ -308,9 +298,7 @@ sim_r_sq <- sim_r_sq[names(sim_r_sq) != "av_deaths_per_100k"]
 
 tibble(sims = sim_r_sq) |> 
   ggplot(aes(x = sims)) + 
-  geom_histogram(binwidth = 0.025,
-                 color = "black",
-                 fill = "skyblue") +
+  geom_histogram(binwidth = 0.025) +
   labs(x = expression("Simulated"~ R^2),
        y = "",
        subtitle = "Number of Simulated Models") +
@@ -318,12 +306,11 @@ tibble(sims = sim_r_sq) |>
 
 ```
 
-The R^2^ values for the simulated and actual data are extremely low. Across 1000 iterations of simulated data, the variability in predicted values explained zero to six percent of the variation in the actual values for TB deaths per 100,000 people. This further confirms that a linear regression is not appropriate for these data.
-
+The R^2^ values for the simulated and actual data are extremely low. Across 100 iterations of simulated data, the variability in predicted values explained zero to six percent of the variation in the actual values for TB deaths per 100,000 people. This further confirms that a linear regression is not appropriate for these data.
 
 ## Sources
 
-Nolen, S. (2023, November 6) Ending TB Is Within Reach — So Why Are Millions Still Dying? *The New York Times*. <https://www.nytimes.com/2023/11/06/health/tuberculosis-tb-treatment-vaccine-diagnosis.html>
+Nolen, S. (2023, November 6) Ending TB Is Within Reach --- So Why Are Millions Still Dying? *The New York Times*. <https://www.nytimes.com/2023/11/06/health/tuberculosis-tb-treatment-vaccine-diagnosis.html>
 
 TB deaths per 100,000, estimated, all forms of TB: World Health Organization through [gapminder.org](https://www.gapminder.org/data/)
 
