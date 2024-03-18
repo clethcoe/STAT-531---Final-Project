@@ -86,7 +86,7 @@ write_csv(combined_dataset_long_cleaned, here("combined_dataset_long_cleaned.csv
 
 ## Data Visualization
 
-To examine how the relationship between our two variables of interest changed over time, we created an animated plot that shows deaths per 100k vs government spending per person in USD for every country in every year of the study (2000 - 2010).
+To examine how the relationship between our two variables of interest changed over time, we created an animated plot that shows TB deaths per 100k vs. government spending per person in USD for every country in every year of the study (2000 - 2010).
 
 ```{r}
 plot <- combined_dataset_long_cleaned |>
@@ -98,7 +98,7 @@ plot <- combined_dataset_long_cleaned |>
              size = 2.5, 
              color = "black", 
              fill = "skyblue") +
-  labs(title = "Deaths Per 100k vs Gov Healthcare Spending - Year: {frame_time}",
+  labs(title = "TB Deaths Per 100k vs. Gov Healthcare Spending - Year: {frame_time}",
        y = "",
        x = "Government healthcare spending per person, USD") +
   transition_time(year) + 
@@ -122,9 +122,9 @@ Over time, the amount of government spending per person increased on average. Th
 plot_2 <- combined_dataset_long_cleaned |>
   ggplot(aes(x = deaths_per_100k)) +
   geom_density(fill = "skyblue", color = "black") +
-  labs(title = "Density Plot of Deaths Per 100k - Year: {frame_time}") +
+  labs(title = "Density Plot of TB Deaths Per 100k - Year: {frame_time}") +
   labs(y = "",
-       x = "Deaths per 100K")+
+       x = "TB Deaths per 100K")+
   transition_time(year) + 
   ease_aes('linear') + 
   theme(aspect.ratio = 1)+
@@ -153,7 +153,7 @@ anim_2
 anim_3
 ```
 
-From these plots, it becomes clearer that as government spending increased over time, the number of deaths per 100k decreased.
+From these plots, it becomes clearer that as government spending increased over time, the number of TB deaths per 100k decreased.
 
 ## Linear Regression
 
@@ -171,9 +171,11 @@ combined_dataset_long_cleaned |>
              fill = "skyblue") + 
   geom_smooth(method = "lm", 
               color = "black") + 
-  xlab("Mean Government Healthcare Spending per Person, USD") + 
+  xlab("Average Government Healthcare Spending per Person, USD") + 
   ylab("") + 
-  ggtitle("Mean Deaths per 100k")+
+  labs(title = "Linear Regression of Average Government Healthcare Spending\nper Person on Average TB Deaths per Country, 2000–2010",
+       subtitle = "\nAverage TB Deaths per 100,000"
+       )+
   theme_bw()
 ```
 
@@ -197,7 +199,7 @@ broom::tidy(combined_dataset_lm) |>
 
 #### 
 
-$\text{Average Deaths per 100k} = 44.52 - 0.017 \times \text{Average Government Health Spending (USD)}$
+$\text{Average TB Deaths per 100k} = 44.52 - 0.017 \times \text{Average Government Health Spending per Person (USD)}$
 
 #### Interpretation
 
