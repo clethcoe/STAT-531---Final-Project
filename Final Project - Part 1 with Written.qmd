@@ -223,7 +223,6 @@ broom::augment(combined_dataset_lm) |>
 To test how well the linear model fits our data, we created simulated data from the linear model. If these data are similar to the actual data gathered by the WHO, then we can be confident in our linear model. Below is our actual TB deaths data (left) and simulated TB deaths data (right).
 
 ```{r}
-#| layout-ncol: 2
 
 # Obtain predictions
 tb_predict <- predict(combined_dataset_lm)
@@ -250,7 +249,8 @@ obs_p <- combined_dataset_long_av |>
   geom_histogram(color = "black",
                  fill = "skyblue"
                  ) +
-  labs(x = "Actual TB Deaths per 100k People",
+  labs(title = "Histogram of Actual TB Deaths\nPer Year: 2000 - 2010",
+       x = "Actual TB Deaths per 100k People",
        y = "",
        subtitle = "Count") +
   xlim(-200, 350) +
@@ -261,7 +261,8 @@ new_p <- sim_response |>
   geom_histogram(color = "black",
                  fill = "skyblue"
                  ) +
-  labs(x = "Simulated TB Deaths per 100k People",
+  labs(title = "Histogram of Simulated TB Deaths\nPer Year", 
+       x = "Simulated TB Deaths per 100k People",
        y = "",
        subtitle = "Count") +
   xlim(-200, 350) +
@@ -304,7 +305,8 @@ tibble(sims = sim_r_sq) |>
   geom_histogram(binwidth = 0.025,
                  color = "black",
                  fill = "skyblue") +
-  labs(x = expression("Simulated"~ R^2),
+  labs(title = "Histogram of Simulated"~ R^2,
+        x = expression("Simulated"~ R^2),
        y = "",
        subtitle = "Number of Simulated Models") +
   theme_bw()
