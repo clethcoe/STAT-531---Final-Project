@@ -200,7 +200,7 @@ broom::tidy(combined_dataset_lm) |>
 
 #### Linear Regression Equation
 
-av_deaths_per_100k = 44.52 - 0.017(av_gov_health_spending_usd)
+Average TB deaths per 100,000 = 44.52 - 0.017(Average government healthcare spending per person, USD)
 
 #### Interpretation
 
