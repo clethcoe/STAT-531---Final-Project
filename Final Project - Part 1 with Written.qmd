@@ -157,8 +157,6 @@ From these plots, it becomes clearer that as government spending increased over 
 
 To further explore the relationship between government spending and deaths caused by TB, we took the average government spending and average deaths per 100k for all recorded years for each country and fit a linear regression to the dataset. Each point represents one country.
 
-### Visualization
-
 ```{r}
 combined_dataset_long_cleaned |> 
   group_by(country) |> 
@@ -177,7 +175,7 @@ combined_dataset_long_cleaned |>
   theme_bw()
 ```
 
-#### Creating the Regression Model
+#### Modeled Equation
 
 ```{r}
 combined_dataset_long_av <- combined_dataset_long_cleaned |> 
@@ -195,17 +193,17 @@ broom::tidy(combined_dataset_lm) |>
                 position = "center")
 ```
 
-#### Linear Regression Equation
+#### 
 
 $\text{Average Deaths per 100k} = 44.52 - 0.017 \times \text{Average Government Health Spending (USD)}$
 
 #### Interpretation
 
-There is a negative correlation between TB deaths per 100k and government healthcare spending per person. Our model suggests that for every \$1000(USD) spent by a government on healthcare, on average, 17 people per 100,000 are prevented from dying of TB. It also suggests that if a government does not spend anything per person on healthcare, 44 people out of 100,000 will die of TB per year on average. However, the relationship between government healthcare spending and TB deaths is not linear and is more similar to a hyperbolic or negative exponential relationship. There is a large amount of variation in average number of TB deaths between countries that spend very little per person on healthcare, and many countries see very few deaths due to TB despite spending very much or little per person on healthcare. 
+There is a negative correlation between TB deaths per 100k and government healthcare spending per person. Our model suggests that for every \$1000(USD) spent by a government on healthcare, on average, 17 people per 100,000 are prevented from dying of TB. It also suggests that if a government does not spend anything per person on healthcare, 44 people out of 100,000 will die of TB per year on average. However, the relationship between government healthcare spending and TB deaths is not linear and is more similar to a hyperbolic or negative exponential relationship. There is a large amount of variation in average number of TB deaths between countries that spend very little per person on healthcare, and many countries see very few deaths due to TB despite spending very much or little per person on healthcare.
 
 With an R^2^ value of about 0.051, our suspicions from the regression visualization are confirmed and our linear model is not a great fit for the data. Though our model is a poor predictor of the data trends, we can tell from our P-values (both \< 0.001) that there is a very strong correlation between these two variables.
 
-When comparing the variance in the response variable and the variance of the fitted data (below), only 6\% of the variance in average deaths per 100k is explained by government spending per person. The remaining variance (94\%) is not explained by the linear model. Considering the small P-value, however, government healthcare spending appears to be a small but significant factor affecting TB deaths. Other factors may include the cost and accessibility of TB screening and drugs, the ratio of healthcare workers to citizens, how often TB drug regimens can be completed, the rate of TB transmission, and many more.
+When comparing the variance in the response variable and the variance of the fitted data (below), only 6% of the variance in average deaths per 100k is explained by government spending per person. The remaining variance (94%) is not explained by the linear model. Considering the small P-value, however, government healthcare spending appears to be a small but significant factor affecting TB deaths. Other factors may include the cost and accessibility of TB screening and drugs, the ratio of healthcare workers to citizens, how often TB drug regimens can be completed, the rate of TB transmission, and many more.
 
 ```{r}
 broom::augment(combined_dataset_lm) |> 
@@ -234,7 +232,7 @@ tb_predict <- predict(combined_dataset_lm)
 
 # Calculate residual standard error
 tb_sigma <- sigma(combined_dataset_lm)
-tb_sigma
+
 
 # Create a function for noise
 noise <- function(x, mean = 0, sd){
@@ -271,8 +269,7 @@ new_p <- sim_response |>
   theme_bw()
 
 
-obs_p 
-new_p
+obs_p + new_p
 
 ```
 
@@ -325,7 +322,7 @@ When analyzing the outcomes of infectious disease, many economic, social, and po
 
 Govt. health spending per person (US\$): World Health Organization through [gapminder.org](https://www.gapminder.org/data/)
 
-Nolen, S. (2023, November 6) Ending TB Is Within Reach — So Why Are Millions Still Dying? *The New York Times*. <https://www.nytimes.com/2023/11/06/health/tuberculosis-tb-treatment-vaccine-diagnosis.html>
+Nolen, S. (2023, November 6) Ending TB Is Within Reach --- So Why Are Millions Still Dying? *The New York Times*. <https://www.nytimes.com/2023/11/06/health/tuberculosis-tb-treatment-vaccine-diagnosis.html>
 
 TB deaths per 100,000, estimated, all forms of TB: World Health Organization through [gapminder.org](https://www.gapminder.org/data/)
 
