@@ -94,7 +94,10 @@ plot <- combined_dataset_long_cleaned |>
     x = gov_health_spending_usd, 
     y = deaths_per_100k
   )) + 
-  geom_point() +
+  geom_point(shape = 21,
+             size = 2.5, 
+             color = "black", 
+             fill = "skyblue") +
   labs(title = "Deaths Per 100k vs Gov Healthcare Spending - Year: {frame_time}",
        y = "",
        x = "Government healthcare spending per person, USD") +
